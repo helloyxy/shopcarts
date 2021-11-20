@@ -56,9 +56,9 @@ class TestShopcartServer(TestCase):
     #  H E L P E R   M E T H O D S
     ######################################################################
 
-    def _create_shopcart(self, count):
+     def _create_shopcart(self, count):
         """Factory method to create shopcart"""
-        shopcarts = []
+        shopcarts = {}
         for _ in range(count):
             test_shopcart = ShopcartFactory()
             resp = self.app.post(
@@ -69,13 +69,12 @@ class TestShopcartServer(TestCase):
                 resp.status_code, status.HTTP_201_CREATED, "Could not create test shopcart"
             )
             new_shopcart = resp.get_json()
+            test_shopcart.id = new_shopcart["id"]
             
-            # key = "_".join([str(new_shopcart['customer_id']), str(new_shopcart['product_id'])])
-            # shopcarts[key] = test_shopcart
-            shopcarts.append(test_shopcart)
+            key = "_".join([str(new_shopcart['customer_id']), str(new_shopcart['product_id'])])
+            shopcarts[key] = test_shopcart
 
-        return shopcarts
-
+        return list(shopcarts.values())
 
     ######################################################################
     #  P L A C E   T E S T   C A S E S   H E R E
